@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Root_Suggestion" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +17,97 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dUj-j2-uPV">
+                                <rect key="frame" x="0.0" y="58" width="600" height="542"/>
+                            </mapView>
+                            <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nJF-ls-VEy">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="dUj-j2-uPV" id="fj2-Ie-5QE"/>
+                        <outlet property="mySearchBar" destination="nJF-ls-VEy" id="w0t-cy-IAL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-4667" y="325"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="QzR-iE-vVO">
+            <objects>
+                <viewController storyboardIdentifier="ViewController" id="JTq-bR-lH5" customClass="ViewController" customModule="Root_Suggestion" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="sIT-5n-zcW"/>
+                        <viewControllerLayoutGuide type="bottom" id="CfJ-5O-DIB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="NXH-BT-pwW">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Ur4-6R-b97">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <connections>
+                                    <outlet property="delegate" destination="JTq-bR-lH5" id="PRL-TD-6dO"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="top" secondItem="NXH-BT-pwW" secondAttribute="topMargin" id="230-ji-cWP"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="Ur4-6R-b97" secondAttribute="bottom" constant="-64" id="4qb-Bc-FZb"/>
+                            <constraint firstItem="CfJ-5O-DIB" firstAttribute="top" secondItem="Ur4-6R-b97" secondAttribute="bottom" id="6A3-19-sga"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="leading" secondItem="NXH-BT-pwW" secondAttribute="leadingMargin" constant="-20" id="LGM-pi-Ucf"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="top" secondItem="sIT-5n-zcW" secondAttribute="bottom" id="LpD-aN-46K"/>
+                            <constraint firstItem="CfJ-5O-DIB" firstAttribute="top" secondItem="Ur4-6R-b97" secondAttribute="bottom" id="MOf-co-68r"/>
+                            <constraint firstItem="CfJ-5O-DIB" firstAttribute="top" secondItem="Ur4-6R-b97" secondAttribute="bottom" id="XRa-UR-003"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="centerX" secondItem="NXH-BT-pwW" secondAttribute="centerX" id="YUa-Ed-5FS"/>
+                            <constraint firstItem="CfJ-5O-DIB" firstAttribute="top" secondItem="Ur4-6R-b97" secondAttribute="bottom" constant="136" id="cMF-8Z-9YI"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="trailing" secondItem="NXH-BT-pwW" secondAttribute="trailingMargin" id="cwJ-pd-Viv"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="top" secondItem="sIT-5n-zcW" secondAttribute="bottom" id="fvQ-ml-Gh6"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="leading" secondItem="NXH-BT-pwW" secondAttribute="leadingMargin" id="gQo-G4-Tmg"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="top" secondItem="sIT-5n-zcW" secondAttribute="bottom" id="hlo-Oq-LMW"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ur4-6R-b97" secondAttribute="trailing" constant="-20" id="kjz-Cl-3OD"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="leading" secondItem="NXH-BT-pwW" secondAttribute="leadingMargin" constant="-20" id="miz-Wr-R2q"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="top" secondItem="sIT-5n-zcW" secondAttribute="bottom" id="onl-Rq-zv3"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="Ur4-6R-b97" secondAttribute="bottom" constant="-64" id="v0H-fk-Quh"/>
+                            <constraint firstItem="Ur4-6R-b97" firstAttribute="top" secondItem="NXH-BT-pwW" secondAttribute="topMargin" id="x8s-0V-YJb"/>
+                            <constraint firstItem="CfJ-5O-DIB" firstAttribute="top" secondItem="Ur4-6R-b97" secondAttribute="bottom" id="yVO-95-vSg"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ur4-6R-b97" secondAttribute="trailing" constant="-20" id="z3r-ch-bP5"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="v0H-fk-Quh"/>
+                                <exclude reference="onl-Rq-zv3"/>
+                                <exclude reference="miz-Wr-R2q"/>
+                                <exclude reference="230-ji-cWP"/>
+                                <exclude reference="cwJ-pd-Viv"/>
+                                <exclude reference="gQo-G4-Tmg"/>
+                                <exclude reference="YUa-Ed-5FS"/>
+                                <exclude reference="fvQ-ml-Gh6"/>
+                                <exclude reference="x8s-0V-YJb"/>
+                                <exclude reference="4qb-Bc-FZb"/>
+                                <exclude reference="LpD-aN-46K"/>
+                                <exclude reference="kjz-Cl-3OD"/>
+                                <exclude reference="yVO-95-vSg"/>
+                                <exclude reference="XRa-UR-003"/>
+                                <exclude reference="cMF-8Z-9YI"/>
+                                <exclude reference="MOf-co-68r"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <navigationItem key="navigationItem" id="cRs-JS-kq6"/>
+                    <connections>
+                        <outlet property="mapView" destination="Ur4-6R-b97" id="h1d-g3-NDl"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="V1L-oR-8wt" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4632" y="-560"/>
         </scene>
     </scenes>
 </document>

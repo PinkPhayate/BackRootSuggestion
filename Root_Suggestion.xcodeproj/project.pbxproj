@@ -14,6 +14,7 @@
 		C44408711DA7DCD70083036F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C444086F1DA7DCD70083036F /* LaunchScreen.storyboard */; };
 		C444087C1DA7DCD70083036F /* Root_SuggestionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C444087B1DA7DCD70083036F /* Root_SuggestionTests.swift */; };
 		C44408871DA7DCD70083036F /* Root_SuggestionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408861DA7DCD70083036F /* Root_SuggestionUITests.swift */; };
+		C44408951DA7F6590083036F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408941DA7F6590083036F /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		C44408821DA7DCD70083036F /* Root_SuggestionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Root_SuggestionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C44408861DA7DCD70083036F /* Root_SuggestionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root_SuggestionUITests.swift; sourceTree = "<group>"; };
 		C44408881DA7DCD70083036F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C44408941DA7F6590083036F /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 				C444086A1DA7DCD70083036F /* Main.storyboard */,
 				C444086D1DA7DCD70083036F /* Assets.xcassets */,
 				C444086F1DA7DCD70083036F /* LaunchScreen.storyboard */,
+				C44408941DA7F6590083036F /* Logger.swift */,
 				C44408721DA7DCD70083036F /* Info.plist */,
 			);
 			path = Root_Suggestion;
@@ -257,6 +260,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C44408691DA7DCD70083036F /* ViewController.swift in Sources */,
+				C44408951DA7F6590083036F /* Logger.swift in Sources */,
 				C44408671DA7DCD70083036F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
