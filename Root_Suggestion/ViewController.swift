@@ -17,22 +17,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var locationManager: CLLocationManager?
     var userLocation: CLLocationCoordinate2D!
     var destLocation: CLLocationCoordinate2D!
-    var request:MKDirectionsRequest = MKDirectionsRequest()
+//    var request:MKDirectionsRequest = MKDirectionsRequest()
     var source:MKMapItem?
     var destination:MKMapItem?
 
-
-//    private var mySearchBar: UISearchBar!
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // 検索バーを作成する.
-//        mySearchBar = UISearchBar()
-//        mySearchBar.delegate = self
-//        mySearchBar.frame = CGRectMake(0, 0, self.view.frame.size.width, 80)
-//        mySearchBar.layer.position = CGPoint(x: self.view.bounds.width/2, y: 50)
-//        mySearchBar.layer.position = CGPoint(x: 0, y: 0)
+        // 現在地を中心に持ってくるスクリプト
+//        mapView.setCenterCoordinate(mapView.userLocation.coordinate, animated: true)
         
         // Unable Cancel button
         self.mySearchBar.showsCancelButton = true
@@ -48,7 +40,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.locationManager = CLLocationManager()
         self.locationManager!.delegate = self
         mapView.delegate = self
-/***
+
         // 位置情報取得の許可状況を確認
         let status = CLLocationManager.authorizationStatus()
     
@@ -57,7 +49,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             Logger.debug("didChangeAuthorizationStatus:\(status)");
             self.locationManager!.requestAlwaysAuthorization()
         }
- */
+
         //位置情報の精度
         self.locationManager!.desiredAccuracy = kCLLocationAccuracyBest
         //位置情報取得間隔(m)
@@ -104,41 +96,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 //            }
 //        })
     }
-    func showUserAndDestinationOnMap()
-    {
-        // 現在地と目的地を含む矩形を計算
-        var maxLat:Double = fmax(userLocation.latitude,  destLocation.latitude)
-        var maxLon:Double = fmax(userLocation.longitude, destLocation.longitude)
-        var minLat:Double = fmin(userLocation.latitude,  destLocation.latitude)
-        var minLon:Double = fmin(userLocation.longitude, destLocation.longitude)
-        
-        // 地図表示するときの緯度、経度の幅を計算
-        var mapMargin:Double = 1.5;  // 経路が入る幅(1.0)＋余白(0.5)
-        var leastCoordSpan:Double = 0.005;    // 拡大表示したときの最大値
-        var span_x:Double = fmax(leastCoordSpan, fabs(maxLat - minLat) * mapMargin);
-        var span_y:Double = fmax(leastCoordSpan, fabs(maxLon - minLon) * mapMargin);
-        
-        var span:MKCoordinateSpan = MKCoordinateSpanMake(span_x, span_y);
-        
-        // 現在地を目的地の中心を計算
-        var center:CLLocationCoordinate2D = CLLocationCoordinate2DMake((maxLat + minLat) / 2, (maxLon + minLon) / 2);
-        var region:MKCoordinateRegion = MKCoordinateRegionMake(center, span);
-        
-        mapView.setRegion(mapView.regionThatFits(region), animated:true);
-    }
     
     // 経路を描画するときの色や線の太さを指定
-    func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
-        if overlay is MKPolyline {
-            var polylineRenderer = MKPolylineRenderer(overlay: overlay)
-            polylineRenderer.strokeColor = UIColor.blueColor()
-            polylineRenderer.lineWidth = 5
-            return polylineRenderer
-        }
-        return nil
-    }
-    func getRoute()
-    {
+    func getRoute() {
         // 現在地と目的地のMKPlacemarkを生成
 //        var fromPlacemark = MKPlacemark(coordinate:userLocation, addressDictionary:nil)
 //        var toPlacemark   = MKPlacemark(coordinate:destLocation, addressDictionary:nil)
@@ -146,21 +106,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 //        var fromItem = MKMapItem(placemark:fromPlacemark)
 //        var toItem   = MKMapItem(placemark:toPlacemark)
 
-//        let request = MKDirectionsRequest()
-//        self.request.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 40.7127, longitude: -74.0059), addressDictionary: nil))
-//        self.request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.783333, longitude: -122.416667), addressDictionary: nil))
-        self.request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.userLocation, addressDictionary: nil))
-        self.request.destination = MKMapItem(placemark: MKPlacemark(coordinate: self.destLocation, addressDictionary: nil))
-        self.request.requestsAlternateRoutes = true
+        let request = MKDirectionsRequest()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.userLocation, addressDictionary: nil))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: self.destLocation, addressDictionary: nil))
+        request.requestsAlternateRoutes = true
         request.transportType = .Walking
-        let directions = MKDirections(request: self.request)
+        let directions = MKDirections(request: request)
         directions.calculateDirectionsWithCompletionHandler { [unowned self] response, error in
             guard let unwrappedResponse = response else { return }
-            
-            for route in unwrappedResponse.routes {
-                self.mapView.add(route.polyline)
-                self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
-            }
+
+            /**CANNOT MAPVIEW.ADD*/
+//            for route in unwrappedResponse.routes {
+//                self.mapView.add(route.polyline)
+//                self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+//            }
         }
         
 
@@ -189,6 +148,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             self.showUserAndDestinationOnMap()
         })
 */    }
+
+    // 地図の表示範囲を計算
+    func showUserAndDestinationOnMap() {
+        // 現在地と目的地を含む矩形を計算
+        let maxLat:Double = fmax(userLocation.latitude,  destLocation.latitude)
+        let maxLon:Double = fmax(userLocation.longitude, destLocation.longitude)
+        let minLat:Double = fmin(userLocation.latitude,  destLocation.latitude)
+        let minLon:Double = fmin(userLocation.longitude, destLocation.longitude)
+        
+        // 地図表示するときの緯度、経度の幅を計算
+        let mapMargin:Double = 1.5;  // 経路が入る幅(1.0)＋余白(0.5)
+        let leastCoordSpan:Double = 0.005;    // 拡大表示したときの最大値
+        let span_x:Double = fmax(leastCoordSpan, fabs(maxLat - minLat) * mapMargin);
+        let span_y:Double = fmax(leastCoordSpan, fabs(maxLon - minLon) * mapMargin);
+        
+        let span:MKCoordinateSpan = MKCoordinateSpanMake(span_x, span_y);
+        
+        // 現在地を目的地の中心を計算
+        let center:CLLocationCoordinate2D = CLLocationCoordinate2DMake((maxLat + minLat) / 2, (maxLon + minLon) / 2);
+        let region:MKCoordinateRegion = MKCoordinateRegionMake(center, span);
+        
+        mapView.setRegion(mapView.regionThatFits(region), animated:true);
+    }
     
     func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
