@@ -30,6 +30,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // set searchBar Style => Default
         self.mySearchBar.searchBarStyle = UISearchBarStyle.Default
         self.mySearchBar.delegate = self
+        self.mySearchBar.text = "新橋駅"
         self.view.addSubview(mySearchBar)
 
         
@@ -44,17 +45,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             self.locationManager!.requestAlwaysAuthorization()
         }
 
-        //位置情報の精度
+        // Accuracy about locationManager
         self.locationManager!.desiredAccuracy = kCLLocationAccuracyBest
         //位置情報取得間隔(m)
         self.locationManager!.distanceFilter = 300
-        
-        self.locationManager?.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager?.startUpdatingLocation()
-
-        // 現在地を中心に持ってくるスクリプト
-//        mapView.setCenterCoordinate(mapView.userLocation.coordinate, animated: true)
-
         
     }
     override func didReceiveMemoryWarning() {
@@ -62,7 +57,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // Dispose of any resources that can be recreated.
     }
 
-    //MARK: Local notification
+    //MARK: Map
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         userLocation = CLLocationCoordinate2DMake(manager.location!.coordinate.latitude, manager.location!.coordinate.longitude)
         
@@ -73,59 +68,46 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         userLocAnnotation.title = "Current Point"
         mapView.addAnnotation(userLocAnnotation)
         Logger.debug("Success to get current location data")
-        
-
     }
+    
     func locationManager(manager: CLLocationManager,didFailWithError error: NSError){
         Logger.error("locationManager error")
     }
     
-    
+    //MARK: Drawing Map
     // 経路を描画するときの色や線の太さを指定
     func getRoute() {
-        // 現在地と目的地のMKPlacemarkを生成
-//        var fromPlacemark = MKPlacemark(coordinate:userLocation, addressDictionary:nil)
-//        var toPlacemark   = MKPlacemark(coordinate:destLocation, addressDictionary:nil)
-        // MKPlacemark から MKMapItem を生成
-//        var fromItem = MKMapItem(placemark:fromPlacemark)
-//        var toItem   = MKMapItem(placemark:toPlacemark)
-
         let request = MKDirectionsRequest()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.userLocation, addressDictionary: nil))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: self.destLocation, addressDictionary: nil))
         request.requestsAlternateRoutes = true
         request.transportType = .Walking
-//        let directions = MKDirections(request: request)
-//        directions.calculateDirectionsWithCompletionHandler { [unowned self] response, error in
-//            guard let unwrappedResponse = response else { return }
-//
-//            /**CANNOT MAPVIEW.ADD*/
-//            for route in unwrappedResponse.routes {
-//                self.mapView.add(route.polyline)
-//                self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
-//            }
-//        }
         
-//        let directions = MKDirections(request:request)
-//        directions.calculateDirectionsWithCompletionHandler({
-//            (response:MKDirectionsResponse!, error:NSError!) -> Void in
-//            
-//            response.routes.count
-//            if (error != nil || response.routes.isEmpty) {
-//                return
-//            }
-//            var route: MKRoute = response.routes[0] as MKRoute
-//            // 経路を描画
-//            self.mapView.addOverlay(route.polyline!)
-//            // 現在地と目的地を含む表示範囲を設定する
-//            self.showUserAndDestinationOnMap()
-//        })
+        let directions = MKDirections(request: request)
+        directions.calculateDirectionsWithCompletionHandler{
+            response, error in
+            
+            guard let response = response else {
+                //handle the error here
+                Logger.error("COULD NOT FIND ANY ROOT")
+                return
+            }
+            let route: MKRoute = response.routes[0] as MKRoute
+            self.mapView.addOverlay(route.polyline)
+            self.showCurrentLocAndDestinationOnMap()
 
+        }
+        
+    }
+    func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+        renderer.strokeColor = UIColor.blueColor()
+        return renderer
     }
 
+
     // 地図の表示範囲を計算
-    func showUserAndDestinationOnMap() {
-        Logger.debug("")
+    func showCurrentLocAndDestinationOnMap() {
         // 現在地と目的地を含む矩形を計算
         let maxLat:Double = fmax(self.userLocation.latitude,  self.destLocation.latitude)
         let maxLon:Double = fmax(self.userLocation.longitude, self.destLocation.longitude)
@@ -147,11 +129,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         mapView.setRegion(mapView.regionThatFits(region), animated:true);
     }
     
-    func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
-        renderer.strokeColor = UIColor.blueColor()
-        return renderer
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        let route: MKPolyline = overlay as! MKPolyline
+        let routeRenderer = MKPolylineRenderer(polyline:route)
+        routeRenderer.lineWidth = 10.0
+        routeRenderer.strokeColor = UIColor.blueColor()
+        return routeRenderer
     }
+    
     //MARK: SearchBar
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         self.mySearchBar.resignFirstResponder()
@@ -163,16 +148,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // Search lat and lng of your destination
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(self.mySearchBar.text!, completionHandler: {(placemarks: [CLPlacemark]?, error: NSError?) -> Void in
+
             // Could not find your distination
             if error != nil {
-                Logger.error("Reverse geocoder failed with error")
+                Logger.error("REVERSE GEOCODER FAILED WITH ERROR")
                 return
             }
-            
+            // Success
             let placemark = placemarks![0]
             Logger.info("\(placemark.location!.coordinate.latitude), \(placemark.location!.coordinate.longitude)")
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
-            self.showUserAndDestinationOnMap()
+            self.showCurrentLocAndDestinationOnMap()
+            self.getRoute()
         })
     }
 }
