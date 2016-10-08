@@ -50,6 +50,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         //位置情報取得間隔(m)
         self.locationManager!.distanceFilter = 300
         self.locationManager?.startUpdatingLocation()
+        self.mapView.removeAnnotations(self.mapView.annotations)
         
     }
     override func didReceiveMemoryWarning() {
@@ -60,13 +61,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     //MARK: Map
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         userLocation = CLLocationCoordinate2DMake(manager.location!.coordinate.latitude, manager.location!.coordinate.longitude)
-        
+
         Logger.info("\(userLocation.latitude), \(userLocation.longitude)")
         
-        let userLocAnnotation: MKPointAnnotation = MKPointAnnotation()
-        userLocAnnotation.coordinate = userLocation
-        userLocAnnotation.title = "Current Point"
-        mapView.addAnnotation(userLocAnnotation)
+//        let userLocAnnotation: MKPointAnnotation = MKPointAnnotation()
+//        userLocAnnotation.coordinate = userLocation
+//        userLocAnnotation.title = "Current Point"
+//        mapView.addAnnotation(userLocAnnotation)
+
         Logger.debug("Success to get current location data")
     }
     
@@ -76,10 +78,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     //MARK: Drawing Map
     // 経路を描画するときの色や線の太さを指定
-    func getRoute() {
+    func getRoute(dest: CLLocationCoordinate2D) {
         let request = MKDirectionsRequest()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.userLocation, addressDictionary: nil))
-        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: self.destLocation, addressDictionary: nil))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: dest, addressDictionary: nil))
         request.requestsAlternateRoutes = true
         request.transportType = .Walking
         
@@ -95,10 +97,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             let route: MKRoute = response.routes[0] as MKRoute
             self.mapView.addOverlay(route.polyline)
             self.showCurrentLocAndDestinationOnMap()
-
         }
-        
     }
+    
     func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
         renderer.strokeColor = UIColor.blueColor()
@@ -115,16 +116,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let minLon:Double = fmin(self.userLocation.longitude, self.destLocation.longitude)
         
         // 地図表示するときの緯度、経度の幅を計算
-        let mapMargin:Double = 1.5;  // 経路が入る幅(1.0)＋余白(0.5)
+        let mapMargin:Double = 3.0
         let leastCoordSpan:Double = 0.005;    // 拡大表示したときの最大値
         let span_x:Double = fmax(leastCoordSpan, fabs(maxLat - minLat) * mapMargin);
         let span_y:Double = fmax(leastCoordSpan, fabs(maxLon - minLon) * mapMargin);
         
         let span:MKCoordinateSpan = MKCoordinateSpanMake(span_x, span_y);
         
-        // 現在地を目的地の中心を計算
+        // Map Center is average of curr and dest
         let center:CLLocationCoordinate2D = CLLocationCoordinate2DMake((maxLat + minLat) / 2, (maxLon + minLon) / 2);
-        let region:MKCoordinateRegion = MKCoordinateRegionMake(center, span);
+        let region:MKCoordinateRegion = MKCoordinateRegionMake(center, span)
+        // Map Center is current location
+//        let region:MKCoordinateRegion = MKCoordinateRegionMake(self.userLocation, span)
         
         mapView.setRegion(mapView.regionThatFits(region), animated:true);
     }
@@ -132,7 +135,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
         let route: MKPolyline = overlay as! MKPolyline
         let routeRenderer = MKPolylineRenderer(polyline:route)
-        routeRenderer.lineWidth = 10.0
+        routeRenderer.lineWidth = 5.0
         routeRenderer.strokeColor = UIColor.blueColor()
         return routeRenderer
     }
@@ -159,7 +162,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             Logger.info("\(placemark.location!.coordinate.latitude), \(placemark.location!.coordinate.longitude)")
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
             self.showCurrentLocAndDestinationOnMap()
-            self.getRoute()
+            self.getRoute( self.destLocation )
         })
     }
 }
