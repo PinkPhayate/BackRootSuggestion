@@ -125,11 +125,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 
     // 地図の表示範囲を計算
     func showUserAndDestinationOnMap() {
+        Logger.debug("")
         // 現在地と目的地を含む矩形を計算
-        let maxLat:Double = fmax(userLocation.latitude,  destLocation.latitude)
-        let maxLon:Double = fmax(userLocation.longitude, destLocation.longitude)
-        let minLat:Double = fmin(userLocation.latitude,  destLocation.latitude)
-        let minLon:Double = fmin(userLocation.longitude, destLocation.longitude)
+        let maxLat:Double = fmax(self.userLocation.latitude,  self.destLocation.latitude)
+        let maxLon:Double = fmax(self.userLocation.longitude, self.destLocation.longitude)
+        let minLat:Double = fmin(self.userLocation.latitude,  self.destLocation.latitude)
+        let minLon:Double = fmin(self.userLocation.longitude, self.destLocation.longitude)
         
         // 地図表示するときの緯度、経度の幅を計算
         let mapMargin:Double = 1.5;  // 経路が入る幅(1.0)＋余白(0.5)
@@ -171,6 +172,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             let placemark = placemarks![0]
             Logger.info("\(placemark.location!.coordinate.latitude), \(placemark.location!.coordinate.longitude)")
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
+            self.showUserAndDestinationOnMap()
         })
     }
 }
