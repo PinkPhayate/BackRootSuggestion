@@ -30,6 +30,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // set searchBar Style => Default
         self.mySearchBar.searchBarStyle = UISearchBarStyle.Default
         self.mySearchBar.delegate = self
+        self.mySearchBar.placeholder = "Please enter your destination"
         self.mySearchBar.text = "新橋駅"
 
 //        self.mySearchBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapScreen(_:))))
@@ -66,6 +67,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 
     //MARK: Map
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -111,6 +113,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+        
         renderer.strokeColor = UIColor.blueColor()
         return renderer
     }
@@ -148,6 +151,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         routeRenderer.strokeColor = UIColor.blueColor()
         return routeRenderer
     }
+    func buttonTapped(overray: MKPolylineRenderer) {
+        //Button Tapped
+    }
     
     //MARK: SearchBar
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -171,21 +177,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             Logger.info("\(placemark.location!.coordinate.latitude), \(placemark.location!.coordinate.longitude)")
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
             self.showCurrentLocAndDestinationOnMap()
-            self.mySearchBar.hidden = true
+//            self.mySearchBar.hidden = true
             self.getRoute( self.destLocation )
         })
     }
     func tapScreen(searchBar: UISearchBar) {
-        if self.mySearchBar.hidden {
-            self.mySearchBar.hidden = false
-        }
-        else {
-            self.mySearchBar.hidden = true
-        }
+//        if self.mySearchBar.hidden {
+//            self.mySearchBar.hidden = false
+//            return
+//        }
+//            self.mySearchBar.hidden = true
     }
+    func handleKeyboardWillShowNotification(notification: NSNotification) {
+        self.mySearchBar.showsCancelButton = true
+    }
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        searchBar.resignFirstResponder()
+    }
+
     @IBAction func pushCurrentLocationButton(sender: AnyObject) {
         // 現在地と目的地を含む矩形を計算
-        if self.userLocation != nil {
+        if self.userLocation == nil || self.destLocation == nil {
+            // Map Center is current location
+//            let region:MKCoordinateRegion = MKCoordinateRegionMake(self.userLocation)
+//            mapView.setRegion(mapView.regionThatFits(region), animated:true);
+
             return
         }
         let maxLat:Double = fmax(self.userLocation.latitude,  self.destLocation.latitude)
