@@ -15,6 +15,13 @@
 		C444087C1DA7DCD70083036F /* Root_SuggestionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C444087B1DA7DCD70083036F /* Root_SuggestionTests.swift */; };
 		C44408871DA7DCD70083036F /* Root_SuggestionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408861DA7DCD70083036F /* Root_SuggestionUITests.swift */; };
 		C44408951DA7F6590083036F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408941DA7F6590083036F /* Logger.swift */; };
+		C444089F1DA8C5510083036F /* HTTPSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C444089E1DA8C5510083036F /* HTTPSecurity.swift */; };
+		C44408A11DA8C55E0083036F /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408A01DA8C55E0083036F /* Operation.swift */; };
+		C44408A31DA8C5B30083036F /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408A21DA8C5B30083036F /* Request.swift */; };
+		C44408A51DA8C63B0083036F /* Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408A41DA8C63B0083036F /* Upload.swift */; };
+		C44408A71DA8C71E0083036F /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44408A61DA8C71E0083036F /* StatusCode.swift */; };
+		C485220F1DA8DA12006EE6E0 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = C485220E1DA8DA12006EE6E0 /* SwiftyJSON.swift */; };
+		C48522111DA8DC0F006EE6E0 /* Stub.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48522101DA8DC0F006EE6E0 /* Stub.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +56,13 @@
 		C44408861DA7DCD70083036F /* Root_SuggestionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root_SuggestionUITests.swift; sourceTree = "<group>"; };
 		C44408881DA7DCD70083036F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C44408941DA7F6590083036F /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		C444089E1DA8C5510083036F /* HTTPSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPSecurity.swift; path = Lib/HTTPSecurity.swift; sourceTree = "<group>"; };
+		C44408A01DA8C55E0083036F /* Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Operation.swift; path = Lib/Operation.swift; sourceTree = "<group>"; };
+		C44408A21DA8C5B30083036F /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Lib/Request.swift; sourceTree = "<group>"; };
+		C44408A41DA8C63B0083036F /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Upload.swift; path = Lib/Upload.swift; sourceTree = "<group>"; };
+		C44408A61DA8C71E0083036F /* StatusCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StatusCode.swift; path = Lib/StatusCode.swift; sourceTree = "<group>"; };
+		C485220E1DA8DA12006EE6E0 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = Lib/SwiftyJSON.swift; sourceTree = "<group>"; };
+		C48522101DA8DC0F006EE6E0 /* Stub.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stub.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,8 +113,10 @@
 		C44408651DA7DCD70083036F /* Root_Suggestion */ = {
 			isa = PBXGroup;
 			children = (
+				C44408A81DA8C7260083036F /* Lib */,
 				C44408661DA7DCD70083036F /* AppDelegate.swift */,
 				C44408681DA7DCD70083036F /* ViewController.swift */,
+				C48522101DA8DC0F006EE6E0 /* Stub.swift */,
 				C444086A1DA7DCD70083036F /* Main.storyboard */,
 				C444086D1DA7DCD70083036F /* Assets.xcassets */,
 				C444086F1DA7DCD70083036F /* LaunchScreen.storyboard */,
@@ -126,6 +142,19 @@
 				C44408881DA7DCD70083036F /* Info.plist */,
 			);
 			path = Root_SuggestionUITests;
+			sourceTree = "<group>";
+		};
+		C44408A81DA8C7260083036F /* Lib */ = {
+			isa = PBXGroup;
+			children = (
+				C44408A41DA8C63B0083036F /* Upload.swift */,
+				C444089E1DA8C5510083036F /* HTTPSecurity.swift */,
+				C44408A21DA8C5B30083036F /* Request.swift */,
+				C44408A61DA8C71E0083036F /* StatusCode.swift */,
+				C485220E1DA8DA12006EE6E0 /* SwiftyJSON.swift */,
+				C44408A01DA8C55E0083036F /* Operation.swift */,
+			);
+			name = Lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,7 +289,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C44408A51DA8C63B0083036F /* Upload.swift in Sources */,
+				C48522111DA8DC0F006EE6E0 /* Stub.swift in Sources */,
+				C44408A31DA8C5B30083036F /* Request.swift in Sources */,
+				C44408A11DA8C55E0083036F /* Operation.swift in Sources */,
+				C444089F1DA8C5510083036F /* HTTPSecurity.swift in Sources */,
 				C44408691DA7DCD70083036F /* ViewController.swift in Sources */,
+				C44408A71DA8C71E0083036F /* StatusCode.swift in Sources */,
+				C485220F1DA8DA12006EE6E0 /* SwiftyJSON.swift in Sources */,
 				C44408951DA7F6590083036F /* Logger.swift in Sources */,
 				C44408671DA7DCD70083036F /* AppDelegate.swift in Sources */,
 			);

@@ -19,6 +19,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var destLocation: CLLocationCoordinate2D!
     var source:MKMapItem?
     var destination:MKMapItem?
+    var points: JSON!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +32,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.mySearchBar.searchBarStyle = UISearchBarStyle.Default
         self.mySearchBar.delegate = self
         self.mySearchBar.placeholder = "Please enter your destination"
-        self.mySearchBar.text = "新橋駅"
+        self.mySearchBar.text = "銀座駅"
 
 //        self.mySearchBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapScreen(_:))))
         self.mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapScreen(_:))))
@@ -61,6 +62,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.currentLocationButton.setImage( UIImage(named: "here"), forState: UIControlState.Normal)
         self.currentLocationButton.addTarget(self, action: #selector(self.pushCurrentLocationButton(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(self.currentLocationButton)
+        
+        
 
     }
     override func didReceiveMemoryWarning() {
@@ -71,8 +74,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 
     //MARK: Map
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        userLocation = CLLocationCoordinate2DMake(manager.location!.coordinate.latitude, manager.location!.coordinate.longitude)
-
+        self.userLocation = CLLocationCoordinate2DMake(manager.location!.coordinate.latitude, manager.location!.coordinate.longitude)
         Logger.info("\(userLocation.latitude), \(userLocation.longitude)")
         
 //        let userLocAnnotation: MKPointAnnotation = MKPointAnnotation()
@@ -155,6 +157,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         //Button Tapped
     }
     
+    func drawRoot() {
+        
+    }
+    
     //MARK: SearchBar
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         self.mySearchBar.resignFirstResponder()
@@ -179,6 +185,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             self.showCurrentLocAndDestinationOnMap()
 //            self.mySearchBar.hidden = true
             self.getRoute( self.destLocation )
+            self.getSuggestedRoots()
         })
     }
     func tapScreen(searchBar: UISearchBar) {
@@ -221,5 +228,33 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let region:MKCoordinateRegion = MKCoordinateRegionMake(self.userLocation, span)
         mapView.setRegion(mapView.regionThatFits(region), animated:true);
     }
+    
+    //MARK: API
+    func getSuggestedRoots(){
+        self.userLocation = Stub.GET_CURRENT_LOCATION_FROM_STUB
+        self.destLocation = Stub.GET_DESTINATION_LOCATION_FROM_STUB
+        
+        let url: String = "http://210.129.50.253:8000/api/routesearch/?format=json&current_location_lng=\(self.userLocation.longitude)&current_location_lat=\(self.userLocation.latitude)&destination_lng=\(self.destLocation.longitude)&destination_lat=\(self.destLocation.latitude)"
+        
+        do {
+            let opt = try HTTP.GET(url)
+            
+            opt.start { (response) in
+                if (response.text != nil) {
+                    Logger.debug("\(response.text)")
+                    let d: NSData = (response.text)!.dataUsingEncoding(NSUTF8StringEncoding)!
+                    
+//                    let json = JSON(data: d)
+                    self.points = JSON(data: d)
+                    
+                    self.drawRoot()
+                }
+            }
+        }
+        catch let error {
+            print("got an error creating the request: \(error)")
+        }
+    }
+
 }
 

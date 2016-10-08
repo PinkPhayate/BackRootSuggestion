@@ -10,44 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Root_Suggestion/ViewController.swift"
-            timestampString = "497595257.260192"
+            timestampString = "497600989.082125"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
             landmarkName = "buttonTapped(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Root_Suggestion/ViewController.swift"
-            timestampString = "497595704.323748"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
-            landmarkName = "pushCurrentLocationButton(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Root_Suggestion/ViewController.swift"
-            timestampString = "497595704.323748"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
-            landmarkName = "pushCurrentLocationButton(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

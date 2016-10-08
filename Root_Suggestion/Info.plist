@@ -40,5 +40,11 @@
 	<string>I have learned more on stack overflow than anything else</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>The spirit of stack overflow is coders helping coders</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+	</dict>
+
 </dict>
 </plist>
