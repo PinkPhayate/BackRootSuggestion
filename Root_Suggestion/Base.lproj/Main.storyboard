@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dUj-j2-uPV">
-                                <rect key="frame" x="0.0" y="58" width="600" height="542"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </mapView>
                             <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nJF-ls-VEy">
                                 <rect key="frame" x="0.0" y="20" width="600" height="44"/>
@@ -28,6 +28,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="dUj-j2-uPV" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="Dob-0x-TIR"/>
                             <constraint firstItem="dUj-j2-uPV" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="J2Y-BX-Zma"/>
                             <constraint firstAttribute="trailingMargin" secondItem="dUj-j2-uPV" secondAttribute="trailing" constant="-20" id="eab-AP-aDc"/>
                         </constraints>

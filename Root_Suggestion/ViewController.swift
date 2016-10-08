@@ -13,7 +13,7 @@ import MapKit
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UISearchBarDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var mySearchBar: UISearchBar!
-    
+    var currentLocationButton: UIButton! = nil
     var locationManager: CLLocationManager?
     var userLocation: CLLocationCoordinate2D!
     var destLocation: CLLocationCoordinate2D!
@@ -31,6 +31,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.mySearchBar.searchBarStyle = UISearchBarStyle.Default
         self.mySearchBar.delegate = self
         self.mySearchBar.text = "新橋駅"
+
+//        self.mySearchBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapScreen(_:))))
+        self.mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapScreen(_:))))
         self.view.addSubview(mySearchBar)
 
         
@@ -51,7 +54,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.locationManager!.distanceFilter = 300
         self.locationManager?.startUpdatingLocation()
         self.mapView.removeAnnotations(self.mapView.annotations)
-        
+
+        /**Current Location Button*/
+        self.currentLocationButton = UIButton( frame:CGRectMake(self.view.frame.size.width-90,self.view.frame.size.height-100,80,80) )
+        self.currentLocationButton.setImage( UIImage(named: "here"), forState: UIControlState.Normal)
+        self.currentLocationButton.addTarget(self, action: #selector(self.pushCurrentLocationButton(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(self.currentLocationButton)
+
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -162,8 +171,38 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             Logger.info("\(placemark.location!.coordinate.latitude), \(placemark.location!.coordinate.longitude)")
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
             self.showCurrentLocAndDestinationOnMap()
+            self.mySearchBar.hidden = true
             self.getRoute( self.destLocation )
         })
+    }
+    func tapScreen(searchBar: UISearchBar) {
+        if self.mySearchBar.hidden {
+            self.mySearchBar.hidden = false
+        }
+        else {
+            self.mySearchBar.hidden = true
+        }
+    }
+    @IBAction func pushCurrentLocationButton(sender: AnyObject) {
+        // 現在地と目的地を含む矩形を計算
+        if self.userLocation != nil {
+            return
+        }
+        let maxLat:Double = fmax(self.userLocation.latitude,  self.destLocation.latitude)
+        let maxLon:Double = fmax(self.userLocation.longitude, self.destLocation.longitude)
+        let minLat:Double = fmin(self.userLocation.latitude,  self.destLocation.latitude)
+        let minLon:Double = fmin(self.userLocation.longitude, self.destLocation.longitude)
+        
+        // 地図表示するときの緯度、経度の幅を計算
+        let mapMargin:Double = 3.0
+        let leastCoordSpan:Double = 0.005;    // 拡大表示したときの最大値
+        let span_x:Double = fmax(leastCoordSpan, fabs(maxLat - minLat) * mapMargin);
+        let span_y:Double = fmax(leastCoordSpan, fabs(maxLon - minLon) * mapMargin);
+        let span:MKCoordinateSpan = MKCoordinateSpanMake(span_x, span_y);
+        
+        // Map Center is current location
+        let region:MKCoordinateRegion = MKCoordinateRegionMake(self.userLocation, span)
+        mapView.setRegion(mapView.regionThatFits(region), animated:true);
     }
 }
 
