@@ -20,6 +20,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var source:MKMapItem?
     var destination:MKMapItem?
     var points:[JSON] = []
+    var defaultHash: Int = 0
+    var flag: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,8 +93,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     //MARK: Drawing Map
     // 経路を描画するときの色や線の太さを指定
-    /**
-    func getRoute(dest: CLLocationCoordinate2D) {
+    func drawShortestRoot(dest: CLLocationCoordinate2D) {
         let request = MKDirectionsRequest()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.userLocation, addressDictionary: nil))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: dest, addressDictionary: nil))
@@ -109,11 +110,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 return
             }
             let route: MKRoute = response.routes[0] as MKRoute
+//            route.setValue("Default", forKey: "courseName")
+            
             self.mapView.addOverlay(route.polyline)
+            self.defaultHash = route.polyline.hashValue
+            Logger.debug("\(route.polyline.hashValue)")
             self.showCurrentLocAndDestinationOnMap()
         }
-    }*/
-    func drawRoot() {
+    }
+    
+    func drawSuggestedRoot() {
         var fromPoint: CLLocationCoordinate2D = Stub.GET_CURRENT_LOCATION_FROM_STUB
         for point in points {
             Logger.debug("\(point)")
@@ -121,11 +127,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             let lat = point["lat"].string
             Logger.debug("\(Double(lng!))")
             Logger.debug("\(Double(lat!))")
-            let toPoint: CLLocationCoordinate2D = CLLocationCoordinate2DMake(Double(lng!)!, Double(lat!)!)
+            let toPoint: CLLocationCoordinate2D = CLLocationCoordinate2DMake(Double(lat!)!, Double(lng!)!)
             self.getRoute(toPoint,fromPoint: fromPoint)
             fromPoint = toPoint
         }
         self.getRoute(Stub.GET_DESTINATION_LOCATION_FROM_STUB,fromPoint: fromPoint)
+
     }
     
     func getRoute(toPoint: CLLocationCoordinate2D, fromPoint: CLLocationCoordinate2D) {
@@ -146,18 +153,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             }
             let route: MKRoute = response.routes[0] as MKRoute
             self.mapView.addOverlay(route.polyline)
-//            self.showCurrentLocAndDestinationOnMap()
         }
     }
 
 
     
-    func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
-        
-        renderer.strokeColor = UIColor.blueColor()
-        return renderer
-    }
+//    func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+//        let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+//        Logger.info("\(renderer.hash)")
+//        renderer.strokeColor = UIColor.redColor()
+//        return renderer
+//    }
 
 
     // 地図の表示範囲を計算
@@ -189,7 +195,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let route: MKPolyline = overlay as! MKPolyline
         let routeRenderer = MKPolylineRenderer(polyline:route)
         routeRenderer.lineWidth = 5.0
-        routeRenderer.strokeColor = UIColor.blueColor()
+        Logger.debug("\(route.hashValue)")
+        if flag {
+//        if route.hashValue == self.defaultHash {
+            routeRenderer.strokeColor = UIColor.blueColor()
+            flag = false
+        }else {
+            routeRenderer.strokeColor = UIColor.redColor()
+        }
         return routeRenderer
     }
     func buttonTapped(overray: MKPolylineRenderer) {
@@ -219,8 +232,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             Logger.info("\(placemark.location!.coordinate.latitude), \(placemark.location!.coordinate.longitude)")
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
             self.showCurrentLocAndDestinationOnMap()
+            
+            self.drawShortestRoot(Stub.GET_DESTINATION_LOCATION_FROM_STUB)
             self.getSuggestedRoots()
-//            self.getRoute( self.destLocation, fromPoint: self.userLocation )
+
+            //            self.getRoute( self.destLocation, fromPoint: self.userLocation )
             self.showCurrentLocAndDestinationOnMap()
         })
     }
@@ -278,7 +294,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     for point in json {
                         self.points.append(point.1)
                     }
-                self.drawRoot()
+                self.drawSuggestedRoot()
                 }
             }
         }
