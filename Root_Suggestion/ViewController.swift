@@ -114,13 +114,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         }
     }*/
     func drawRoot() {
+        var fromPoint: CLLocationCoordinate2D = Stub.GET_CURRENT_LOCATION_FROM_STUB
         for point in points {
-            let lng = point["lng"]
-            let lat = point["lat"]
-            Logger.debug("\(lng)")
-            Logger.debug("\(lat)")
-//            let userLocation: CLLocationCoordinate2D = CLLocationCoordinate2DMake(lat,lng)
+            Logger.debug("\(point)")
+            let lng = point["lng"].string
+            let lat = point["lat"].string
+            Logger.debug("\(Double(lng!))")
+            Logger.debug("\(Double(lat!))")
+            let toPoint: CLLocationCoordinate2D = CLLocationCoordinate2DMake(Double(lng!)!, Double(lat!)!)
+            self.getRoute(toPoint,fromPoint: fromPoint)
+            fromPoint = toPoint
         }
+        self.getRoute(Stub.GET_DESTINATION_LOCATION_FROM_STUB,fromPoint: fromPoint)
     }
     
     func getRoute(toPoint: CLLocationCoordinate2D, fromPoint: CLLocationCoordinate2D) {
@@ -237,10 +242,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     @IBAction func pushCurrentLocationButton(sender: AnyObject) {
         // 現在地と目的地を含む矩形を計算
         if self.userLocation == nil || self.destLocation == nil {
-            // Map Center is current location
-//            let region:MKCoordinateRegion = MKCoordinateRegionMake(self.userLocation)
-//            mapView.setRegion(mapView.regionThatFits(region), animated:true);
-
             return
         }
         let maxLat:Double = fmax(self.userLocation.latitude,  self.destLocation.latitude)
