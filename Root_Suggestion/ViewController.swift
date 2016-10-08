@@ -19,7 +19,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var destLocation: CLLocationCoordinate2D!
     var source:MKMapItem?
     var destination:MKMapItem?
-    var points: JSON!
+    var points:[JSON] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,6 +91,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     //MARK: Drawing Map
     // 経路を描画するときの色や線の太さを指定
+    /**
     func getRoute(dest: CLLocationCoordinate2D) {
         let request = MKDirectionsRequest()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.userLocation, addressDictionary: nil))
@@ -111,7 +112,40 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             self.mapView.addOverlay(route.polyline)
             self.showCurrentLocAndDestinationOnMap()
         }
+    }*/
+    func drawRoot() {
+        for point in points {
+            let lng = point["lng"]
+            let lat = point["lat"]
+            Logger.debug("\(lng)")
+            Logger.debug("\(lat)")
+//            let userLocation: CLLocationCoordinate2D = CLLocationCoordinate2DMake(lat,lng)
+        }
     }
+    
+    func getRoute(toPoint: CLLocationCoordinate2D, fromPoint: CLLocationCoordinate2D) {
+        let request = MKDirectionsRequest()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: fromPoint, addressDictionary: nil))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: toPoint, addressDictionary: nil))
+        request.requestsAlternateRoutes = true
+        request.transportType = .Walking
+        
+        let directions = MKDirections(request: request)
+        directions.calculateDirectionsWithCompletionHandler{
+            response, error in
+            
+            guard let response = response else {
+                //handle the error here
+                Logger.error("COULD NOT FIND ANY ROOT")
+                return
+            }
+            let route: MKRoute = response.routes[0] as MKRoute
+            self.mapView.addOverlay(route.polyline)
+//            self.showCurrentLocAndDestinationOnMap()
+        }
+    }
+
+
     
     func mapView( mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
@@ -157,9 +191,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         //Button Tapped
     }
     
-    func drawRoot() {
-        
-    }
     
     //MARK: SearchBar
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -183,9 +214,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             Logger.info("\(placemark.location!.coordinate.latitude), \(placemark.location!.coordinate.longitude)")
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
             self.showCurrentLocAndDestinationOnMap()
-//            self.mySearchBar.hidden = true
-            self.getRoute( self.destLocation )
             self.getSuggestedRoots()
+//            self.getRoute( self.destLocation, fromPoint: self.userLocation )
+            self.showCurrentLocAndDestinationOnMap()
         })
     }
     func tapScreen(searchBar: UISearchBar) {
@@ -235,7 +266,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.destLocation = Stub.GET_DESTINATION_LOCATION_FROM_STUB
         
         let url: String = "http://210.129.50.253:8000/api/routesearch/?format=json&current_location_lng=\(self.userLocation.longitude)&current_location_lat=\(self.userLocation.latitude)&destination_lng=\(self.destLocation.longitude)&destination_lat=\(self.destLocation.latitude)"
-        
         do {
             let opt = try HTTP.GET(url)
             
@@ -243,11 +273,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 if (response.text != nil) {
                     Logger.debug("\(response.text)")
                     let d: NSData = (response.text)!.dataUsingEncoding(NSUTF8StringEncoding)!
-                    
-//                    let json = JSON(data: d)
-                    self.points = JSON(data: d)
-                    
-                    self.drawRoot()
+                    let json = JSON(data: d)
+                    for point in json {
+                        self.points.append(point.1)
+                    }
+                self.drawRoot()
                 }
             }
         }
