@@ -81,22 +81,22 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="v0H-fk-Quh"/>
-                                <exclude reference="onl-Rq-zv3"/>
-                                <exclude reference="miz-Wr-R2q"/>
                                 <exclude reference="230-ji-cWP"/>
-                                <exclude reference="cwJ-pd-Viv"/>
-                                <exclude reference="gQo-G4-Tmg"/>
-                                <exclude reference="YUa-Ed-5FS"/>
-                                <exclude reference="fvQ-ml-Gh6"/>
-                                <exclude reference="x8s-0V-YJb"/>
                                 <exclude reference="4qb-Bc-FZb"/>
                                 <exclude reference="LpD-aN-46K"/>
+                                <exclude reference="YUa-Ed-5FS"/>
+                                <exclude reference="cwJ-pd-Viv"/>
+                                <exclude reference="fvQ-ml-Gh6"/>
+                                <exclude reference="gQo-G4-Tmg"/>
                                 <exclude reference="kjz-Cl-3OD"/>
-                                <exclude reference="yVO-95-vSg"/>
+                                <exclude reference="miz-Wr-R2q"/>
+                                <exclude reference="onl-Rq-zv3"/>
+                                <exclude reference="v0H-fk-Quh"/>
+                                <exclude reference="x8s-0V-YJb"/>
+                                <exclude reference="MOf-co-68r"/>
                                 <exclude reference="XRa-UR-003"/>
                                 <exclude reference="cMF-8Z-9YI"/>
-                                <exclude reference="MOf-co-68r"/>
+                                <exclude reference="yVO-95-vSg"/>
                             </mask>
                         </variation>
                     </view>
