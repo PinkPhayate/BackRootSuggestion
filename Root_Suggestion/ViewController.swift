@@ -90,7 +90,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func locationManager(manager: CLLocationManager,didFailWithError error: NSError){
         Logger.error("locationManager error")
     }
-    
+    func drawAnnotations() {
+        for point in self.points {
+            Logger.debug("\(point)")
+            let lng = point["lng"].string
+            let lat = point["lat"].string
+            Logger.debug("\(Double(lng!))")
+            Logger.debug("\(Double(lat!))")
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = CLLocationCoordinate2DMake(Double(lat!)!, Double(lng!)!)
+            annotation.title = point["title"].string
+            self.mapView.addAnnotation(annotation)
+            
+        }
+    }
     //MARK: Drawing Map
     // 経路を描画するときの色や線の太さを指定
     func drawShortestRoot(dest: CLLocationCoordinate2D) {
@@ -295,6 +308,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         self.points.append(point.1)
                     }
                 self.drawSuggestedRoot()
+                self.drawAnnotations()
+                    
                 }
             }
         }
