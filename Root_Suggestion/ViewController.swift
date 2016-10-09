@@ -90,16 +90,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func locationManager(manager: CLLocationManager,didFailWithError error: NSError){
         Logger.error("locationManager error")
     }
+    
+    //MARK: ANNOTATION
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        let annotation = view.annotation
+        let title = annotation!.title
+        Logger.debug("\(title)")
+    }
+
     func drawAnnotations() {
         for point in self.points {
             Logger.debug("\(point)")
             let lng = point["lng"].string
             let lat = point["lat"].string
+            let title = point["name"].string
             Logger.debug("\(Double(lng!))")
             Logger.debug("\(Double(lat!))")
             let annotation = MKPointAnnotation()
             annotation.coordinate = CLLocationCoordinate2DMake(Double(lat!)!, Double(lng!)!)
-            annotation.title = point["title"].string
+            annotation.title = String(title!)
+            Logger.debug(String(title!))
+            annotation.subtitle = ""
+
             self.mapView.addAnnotation(annotation)
             
         }
