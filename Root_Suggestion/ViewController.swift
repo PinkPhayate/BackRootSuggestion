@@ -90,8 +90,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func locationManager(manager: CLLocationManager,didFailWithError error: NSError){
         Logger.error("locationManager error")
     }
-    
-    //MARK: ANNOTATION
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        let route: MKPolyline = overlay as! MKPolyline
+        let routeRenderer = MKPolylineRenderer(polyline:route)
+        routeRenderer.lineWidth = 5.0
+        Logger.debug("\(route.hashValue)")
+        if self.flag {
+            //        if route.hashValue == self.defaultHash {
+            routeRenderer.strokeColor = UIColor.blueColor()
+            self.flag = false
+        }else {
+            routeRenderer.strokeColor = UIColor.redColor()
+        }
+        return routeRenderer
+    }
+
+    //MARK: Annotation
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         let annotation = view.annotation
         let title = annotation!.title
@@ -173,6 +187,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             
             guard let response = response else {
                 //handle the error here
+                self.showErrorAlert( "目的地が見つかりません" )
                 Logger.error("COULD NOT FIND ANY ROOT")
                 return
             }
@@ -216,20 +231,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         mapView.setRegion(mapView.regionThatFits(region), animated:true);
     }
     
-    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
-        let route: MKPolyline = overlay as! MKPolyline
-        let routeRenderer = MKPolylineRenderer(polyline:route)
-        routeRenderer.lineWidth = 5.0
-        Logger.debug("\(route.hashValue)")
-        if flag {
-//        if route.hashValue == self.defaultHash {
-            routeRenderer.strokeColor = UIColor.blueColor()
-            flag = false
-        }else {
-            routeRenderer.strokeColor = UIColor.redColor()
-        }
-        return routeRenderer
-    }
     func buttonTapped(overray: MKPolylineRenderer) {
         //Button Tapped
     }
@@ -237,6 +238,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     //MARK: SearchBar
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        self.flag = true
         self.mySearchBar.resignFirstResponder()
         // セット済みのピンを削除
         self.mapView.removeAnnotations(self.mapView.annotations)
@@ -258,8 +260,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             self.destLocation = CLLocationCoordinate2DMake( placemark.location!.coordinate.latitude, placemark.location!.coordinate.longitude)
             self.showCurrentLocAndDestinationOnMap()
             
-            self.drawShortestRoot(Stub.GET_DESTINATION_LOCATION_FROM_STUB)
-            self.getSuggestedRoots()
+
+            if self.mySearchBar.text! == "銀座" || self.mySearchBar.text! == "銀座駅" {
+                self.drawShortestRoot(Stub.GET_DESTINATION_LOCATION_FROM_STUB)
+                self.getSuggestedRoots()
+            }else {
+                self.drawShortestRoot( self.destLocation )
+            }
 
             //            self.getRoute( self.destLocation, fromPoint: self.userLocation )
             self.showCurrentLocAndDestinationOnMap()
@@ -325,9 +332,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 }
             }
         }
-        catch let error {
-            print("got an error creating the request: \(error)")
+        catch _ {
+            showErrorAlert( "サーバーに接続できません" )
         }
+    }
+    func showErrorAlert(message: String){
+        let alertController: UIAlertController = UIAlertController(title: "ERROR", message: message, preferredStyle: .Alert)
+        let actionOK = UIAlertAction(title: "OK", style: .Default){
+            action -> Void in
+        }
+        alertController.addAction(actionOK)
+        self.presentViewController(alertController, animated: true, completion: nil)
     }
 
 }
