@@ -33,8 +33,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // set searchBar Style => Default
         self.mySearchBar.searchBarStyle = UISearchBarStyle.Default
         self.mySearchBar.delegate = self
-        self.mySearchBar.placeholder = "Please enter your destination"
-        self.mySearchBar.text = "銀座駅"
+        self.mySearchBar.placeholder = "目的地                                                                                                                         "
+//        self.mySearchBar.text = "銀座駅"
 
 //        self.mySearchBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapScreen(_:))))
         self.mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapScreen(_:))))
@@ -252,6 +252,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             // Could not find your distination
             if error != nil {
                 Logger.error("REVERSE GEOCODER FAILED WITH ERROR")
+                self.showErrorAlert( "目的地が見つかりません" )
                 return
             }
             // Success
@@ -333,7 +334,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             }
         }
         catch _ {
-            showErrorAlert( "サーバーに接続できません" )
+            self.showErrorAlert( "サーバーに接続できません" )
         }
     }
     func showErrorAlert(message: String){
