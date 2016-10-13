@@ -9,6 +9,8 @@
 import UIKit
 import CoreLocation
 import MapKit
+import SwiftyJSON
+
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UISearchBarDelegate {
     @IBOutlet weak var mapView: MKMapView!
@@ -19,6 +21,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var destLocation: CLLocationCoordinate2D!
     var source:MKMapItem?
     var destination:MKMapItem?
+//    var points: [JSON] = []
+//    var points: [NSDictionary] = []
     var points:[JSON] = []
     var defaultHash: Int = 0
     var flag: Bool = true
@@ -312,30 +316,30 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     //MARK: API
     func getSuggestedRoots(){
-        self.userLocation = Stub.GET_CURRENT_LOCATION_FROM_STUB
-        self.destLocation = Stub.GET_DESTINATION_LOCATION_FROM_STUB
-        
-        let url: String = "http://210.129.50.253:8000/api/routesearch/?format=json&current_location_lng=\(self.userLocation.longitude)&current_location_lat=\(self.userLocation.latitude)&destination_lng=\(self.destLocation.longitude)&destination_lat=\(self.destLocation.latitude)"
-        do {
-            let opt = try HTTP.GET(url)
-            
-            opt.start { (response) in
-                if (response.text != nil) {
-                    Logger.debug("\(response.text)")
-                    let d: NSData = (response.text)!.dataUsingEncoding(NSUTF8StringEncoding)!
-                    let json = JSON(data: d)
-                    for point in json {
-                        self.points.append(point.1)
-                    }
-                self.drawSuggestedRoot()
-                self.drawAnnotations()
-                    
-                }
-            }
-        }
-        catch _ {
-            self.showErrorAlert( "サーバーに接続できません" )
-        }
+//        self.userLocation = Stub.GET_CURRENT_LOCATION_FROM_STUB
+//        self.destLocation = Stub.GET_DESTINATION_LOCATION_FROM_STUB
+//        
+//        let url: String = "http://210.129.50.253:8000/api/routesearch/?format=json&current_location_lng=\(self.userLocation.longitude)&current_location_lat=\(self.userLocation.latitude)&destination_lng=\(self.destLocation.longitude)&destination_lat=\(self.destLocation.latitude)"
+//        do {
+//            let opt = try HTTP.GET(url)
+//            
+//            opt.start { (response) in
+//                if (response.text != nil) {
+//                    Logger.debug("\(response.text)")
+//                    let d: NSData = (response.text)!.dataUsingEncoding(NSUTF8StringEncoding)!
+//                    let json = JSON(data: d)
+//                    for point in json {
+//                        self.points.append(point.1)
+//                    }
+//                self.drawSuggestedRoot()
+//                self.drawAnnotations()
+//                    
+//                }
+//            }
+//        }
+//        catch _ {
+//            self.showErrorAlert( "サーバーに接続できません" )
+//        }
     }
     func showErrorAlert(message: String){
         let alertController: UIAlertController = UIAlertController(title: "ERROR", message: message, preferredStyle: .Alert)

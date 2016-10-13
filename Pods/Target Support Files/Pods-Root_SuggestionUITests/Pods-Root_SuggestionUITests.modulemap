@@ -1,0 +1,6 @@
+framework module Pods_Root_SuggestionUITests {
+  umbrella header "Pods-Root_SuggestionUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
