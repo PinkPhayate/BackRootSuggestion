@@ -72,11 +72,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
 
     }
+
+    override func viewWillAppear(animated: Bool) {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: #selector(self.handleKeyboardWillShowNotification(_:)), name: UIKeyboardWillShowNotification, object: nil)
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+    //MARK: Model
 
     //MARK: Map
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -240,7 +245,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     }
     
     
-    //MARK: SearchBar
+    //MARK: Controller
+    func handleKeyboardWillShowNotification(notification: NSNotification) {
+        self.mySearchBar.showsCancelButton = true
+    }
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        self.mySearchBar.showsCancelButton = false
+        self.mySearchBar.resignFirstResponder()
+    }
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         self.flag = true
         self.mySearchBar.resignFirstResponder()
@@ -284,13 +296,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 //        }
 //            self.mySearchBar.hidden = true
     }
-    func handleKeyboardWillShowNotification(notification: NSNotification) {
-        self.mySearchBar.showsCancelButton = true
-    }
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-        searchBar.showsCancelButton = false
-        searchBar.resignFirstResponder()
-    }
+
 
     @IBAction func pushCurrentLocationButton(sender: AnyObject) {
         // 現在地と目的地を含む矩形を計算
